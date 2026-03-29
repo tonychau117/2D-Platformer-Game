@@ -1,14 +1,28 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
-using System.Collections.Generic;
-
 
 public class PlayButton : MonoBehaviour
 {
+    public AudioSource src;
+    public AudioClip loadLevel;
+
     // what happens when we click on the button
     public void loadGameLevel()
     {
-        SceneManager.LoadScene("GameLevel"); // loads the game scene
+        // Start the coroutine instead of loading immediately
+        StartCoroutine(PlaySoundAndLoad());
+    }
+
+    private IEnumerator PlaySoundAndLoad()
+    {
+        src.clip = loadLevel;
+        src.Play();
+
+        // Wait for the exact duration of the audio clip
+        yield return new WaitForSeconds(loadLevel.length);
+
+        // Load the game scene after the wait is over
+        SceneManager.LoadScene("GameLevel");
     }
 }
