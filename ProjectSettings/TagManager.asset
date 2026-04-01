@@ -50,8 +50,14 @@ TagManager:
   - name: Darker Darker Tree
     uniqueID: 577303165
     locked: 0
+  - name: Tree Canopy
+    uniqueID: 125621319
+    locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Foreground
+    uniqueID: 1851489529
     locked: 0
   m_RenderingLayers:
   - Default
