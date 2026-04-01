@@ -38,8 +38,17 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Background 1
+    uniqueID: 3045553519
+    locked: 0
   - name: Background
     uniqueID: 34786329
+    locked: 0
+  - name: Darker Tree
+    uniqueID: 846626959
+    locked: 0
+  - name: Darker Darker Tree
+    uniqueID: 577303165
     locked: 0
   - name: Default
     uniqueID: 0
