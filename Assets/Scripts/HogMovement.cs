@@ -1,0 +1,35 @@
+using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+
+public class HogMovement : MonoBehaviour
+{
+    public Rigidbody2D rb;
+    public float movementSpeed = 2f;
+    public int direction = 1;
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
+    {
+        
+    }
+
+    // Update is called once per frame
+    void FixedUpdate()
+    {
+        rb.linearVelocity = Vector2.right * movementSpeed * direction;
+    }
+
+    void OnCollisionEnter2D(Collision2D coll)
+    {
+        GameObject collidedWith = coll.gameObject;
+
+        if (collidedWith.CompareTag("Obstacle"))
+        {
+            direction = -direction;
+            
+        }
+        transform.localScale = new Vector3(direction, 1, 1);
+    }
+
+
+}

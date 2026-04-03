@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class CharacterMovement : MonoBehaviour
 {
@@ -92,5 +93,19 @@ public class CharacterMovement : MonoBehaviour
         anim.SetBool("Jump", Mathf.Abs(rb.linearVelocity.y) > .1f);
         anim.SetBool("Idle", Mathf.Abs(moveInput.x) < .1f);
         anim.SetBool("Running", Mathf.Abs(moveInput.x) > .1f);
+    }
+
+    void OnCollisionEnter2D(Collision2D coll)
+    {
+        GameObject collidedWith = coll.gameObject;
+
+        if (collidedWith.CompareTag("Obstacle") || collidedWith.CompareTag("Enemy"))
+        {
+            SceneManager.LoadScene("GameLevel");
+        }
+        else if (collidedWith.CompareTag("Goal"))
+        {
+            SceneManager.LoadScene("Victory");
+        }
     }
 }
