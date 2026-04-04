@@ -42,6 +42,11 @@ public class CharacterMovement : MonoBehaviour
         pos.x = clampX;
         pos.y = clampY;
         transform.position = pos;
+
+        if (Keyboard.current.escapeKey.wasPressedThisFrame)
+        {
+            SceneManager.LoadScene("StartMenu");
+        }
     }
 
     void FixedUpdate()
