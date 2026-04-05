@@ -60,6 +60,7 @@ public class CharacterMovement : MonoBehaviour
     {
         float targetSpeed = moveInput.x * movementSpeed;
         rb.linearVelocity = new Vector2(targetSpeed, rb.linearVelocity.y); // sets speed
+        anim.SetFloat("yVelocity", rb.linearVelocity.y);
     }
 
     // flips char based on dir
@@ -107,9 +108,18 @@ public class CharacterMovement : MonoBehaviour
     // animation controller
     void AnimationController()
     {
-        anim.SetBool("Jump", Mathf.Abs(rb.linearVelocity.y) > .1f);
-        anim.SetBool("Idle", Mathf.Abs(moveInput.x) < .1f);
-        anim.SetBool("Running", Mathf.Abs(moveInput.x) > .1f);
+        if(isGrounded)
+        {
+            anim.SetBool("Idle", Mathf.Abs(moveInput.x) < .1f);
+            anim.SetBool("Running", Mathf.Abs(moveInput.x) > .1f);
+            anim.SetBool("isJumping", false);
+        }
+        else
+        {
+            anim.SetBool("isJumping", true);
+            anim.SetBool("Idle", false);
+            anim.SetBool("Running", false);
+        }
     }
 
     // on collision
