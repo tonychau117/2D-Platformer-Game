@@ -16,19 +16,20 @@ public class HogMovement : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        rb.linearVelocity = Vector2.right * movementSpeed * direction;
+        rb.linearVelocity = Vector2.right * movementSpeed * direction; // sets the hog speed
     }
 
     void OnCollisionEnter2D(Collision2D coll)
     {
         GameObject collidedWith = coll.gameObject;
 
+        // flip hog direction if he hits the rock
         if (collidedWith.CompareTag("Obstacle"))
         {
-            direction = -direction;
+            direction = -direction; // change direction
             
         }
-        transform.localScale = new Vector3(direction, 1, 1);
+        transform.localScale = new Vector3(direction, 1, 1); // flips
     }
 
 

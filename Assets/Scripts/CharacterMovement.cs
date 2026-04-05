@@ -6,36 +6,42 @@ using UnityEngine.SceneManagement;
 
 public class CharacterMovement : MonoBehaviour
 {
-    public Rigidbody2D rb;
+    public Rigidbody2D rb; // rigidbody of character
     
-    public float movementSpeed = 2f;
-    public int direction = 1;
-    public float jump;
+    public float movementSpeed = 2f; // base movement speed
+    public int direction = 1; // facing pos x axis
+    public float jump; // jump amount
 
-    public PlayerInput playerInput;
-    public Vector2 moveInput;
+    public PlayerInput playerInput; // records player input
+    public Vector2 moveInput; // movement input
     
     //
-    public Transform groundCheck;
-    public float groundCheckRadius;
-    public LayerMask groundLayer;
-    private bool isGrounded;
+    public Transform groundCheck; // checks if we are on the ground
+    public float groundCheckRadius; // circle to check if we are on the ground
+    public LayerMask groundLayer; // layer of the ground
+    private bool isGrounded; // t/f for on the ground
 
-    public Animator anim;
-    public Vector2 screenBounds;
+    public Animator anim; // animator to animate clips depending on state
+    public Vector2 screenBounds; // screen bounds
+
+    public AudioSource src; // source
+    public AudioClip deathSound; // sound on death
+    public AudioClip movementSound; // sound on movement
+    public AudioClip jumpSound; // sound on jump
 
     void Start()
     {
-        screenBounds = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, Screen.height));
+        screenBounds = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, Screen.height)); // sets screen grounds
     }
 
     // Update is called once per frame
     void Update()
     {
-        CheckGrounded();
-        Flip();
-        AnimationController();
+        CheckGrounded(); // constantly checking if we are on ground
+        Flip(); // constantly checking to see if char needs to be flipped
+        AnimationController(); // controls animation state
 
+        // ensuring that player stays in bounds of the screen
         float clampX = Mathf.Clamp(transform.position.x, -screenBounds.x + .5f, screenBounds.x - .5f);
         float clampY = Mathf.Clamp(transform.position.y, -screenBounds.y, screenBounds.y - .5f);
         Vector2 pos = transform.position;
@@ -43,6 +49,7 @@ public class CharacterMovement : MonoBehaviour
         pos.y = clampY;
         transform.position = pos;
 
+        // esc to go back to start menu
         if (Keyboard.current.escapeKey.wasPressedThisFrame)
         {
             SceneManager.LoadScene("StartMenu");
@@ -52,9 +59,10 @@ public class CharacterMovement : MonoBehaviour
     void FixedUpdate()
     {
         float targetSpeed = moveInput.x * movementSpeed;
-        rb.linearVelocity = new Vector2(targetSpeed, rb.linearVelocity.y);
+        rb.linearVelocity = new Vector2(targetSpeed, rb.linearVelocity.y); // sets speed
     }
 
+    // flips char based on dir
     void Flip()
     {
         if(moveInput.x > 0.1f)
@@ -68,31 +76,35 @@ public class CharacterMovement : MonoBehaviour
         transform.localScale = new Vector3(direction, 1, 1);
     }
 
+    // checks if we are on the ground via overlapcircle
     void CheckGrounded()
     {
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
     }
 
+    // records move
     public void OnMove(InputValue value)
     {
         moveInput = value.Get<Vector2>();
     }
 
+    // prevents multi jump in air
     public void OnJump(InputValue value)
     {
         if(value.isPressed && isGrounded == true)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jump);
-        }
-        
+        }        
     }
 
+    // draw the overlapped circle to check ground
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
     }
 
+    // animation controller
     void AnimationController()
     {
         anim.SetBool("Jump", Mathf.Abs(rb.linearVelocity.y) > .1f);
@@ -100,17 +112,40 @@ public class CharacterMovement : MonoBehaviour
         anim.SetBool("Running", Mathf.Abs(moveInput.x) > .1f);
     }
 
+    // on collision
     void OnCollisionEnter2D(Collision2D coll)
     {
         GameObject collidedWith = coll.gameObject;
 
+        // if char hits obstacle or enemy -> play sound & reload scene
         if (collidedWith.CompareTag("Obstacle") || collidedWith.CompareTag("Enemy"))
         {
-            SceneManager.LoadScene("GameLevel");
+            loadGameLevel();
         }
+        // else if we reach the end -> play victory screen
         else if (collidedWith.CompareTag("Goal"))
         {
             SceneManager.LoadScene("Victory");
         }
     }
+
+    public void loadGameLevel()
+    {
+        // start the coroutine instead of loading immediately
+        StartCoroutine(PlaySoundAndLoad());
+    }
+
+    private IEnumerator PlaySoundAndLoad()
+    {
+        src.clip = deathSound;
+        src.time = .2f;
+        src.Play();
+
+        // wait for the exact duration of the audio clip
+        yield return new WaitForSeconds(.3f);
+
+        // load the game scene after the wait is over
+        SceneManager.LoadScene("GameLevel");
+    }
+
 }

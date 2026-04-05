@@ -12,6 +12,7 @@ public class BackToStart : MonoBehaviour
     }
 
     // Update is called once per frame
+    // esc -> return to start menu
     void Update()
     {
         if (Keyboard.current.escapeKey.wasPressedThisFrame)

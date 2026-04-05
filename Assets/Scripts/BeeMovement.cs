@@ -15,14 +15,10 @@ public class BeeMovement : MonoBehaviour
     }
 
     // Update is called once per frame
+    // bee movement
     void FixedUpdate()
     {
         float newY = startPos.y + Mathf.Sin(Time.time * frequency) * amplitude;
         transform.position = new Vector2(transform.position.x, newY);
-    }
-
-    void OnCollisionEnter2D(Collision2D coll)
-    {
-        GameObject collidedWith = coll.gameObject;
     }
 }

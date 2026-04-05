@@ -10,7 +10,7 @@ public class PlayButton : MonoBehaviour
     // what happens when we click on the button
     public void loadGameLevel()
     {
-        // Start the coroutine instead of loading immediately
+        // start the coroutine instead of loading immediately
         StartCoroutine(PlaySoundAndLoad());
     }
 
@@ -19,10 +19,10 @@ public class PlayButton : MonoBehaviour
         src.clip = loadLevel;
         src.Play();
 
-        // Wait for the exact duration of the audio clip
+        // wait for the exact duration of the audio clip
         yield return new WaitForSeconds(loadLevel.length);
 
-        // Load the game scene after the wait is over
+        // load the game scene after the wait is over
         SceneManager.LoadScene("GameLevel");
     }
 }
