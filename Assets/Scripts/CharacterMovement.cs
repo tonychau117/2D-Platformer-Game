@@ -29,6 +29,9 @@ public class CharacterMovement : MonoBehaviour
     public AudioClip movementSound; // sound on movement
     public AudioClip jumpSound; // sound on jump
 
+    public float footstepDelay = 0.3f;
+    public float footstepTimer;
+
     void Start()
     {
         screenBounds = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, Screen.height)); // sets screen grounds
@@ -54,6 +57,23 @@ public class CharacterMovement : MonoBehaviour
         {
             SceneManager.LoadScene("StartMenu");
         }
+
+        if (isGrounded && Mathf.Abs(rb.linearVelocity.x) > 0.1f)
+        {
+            footstepTimer -= Time.deltaTime; // cd
+
+            if (footstepTimer <= 0)
+            {
+                src.PlayOneShot(movementSound);
+                footstepTimer = footstepDelay; // reset
+            }
+        }
+        else
+        {
+            // reset timer
+            footstepTimer = 0f;
+        }
+
     }
 
     void FixedUpdate()
@@ -95,6 +115,7 @@ public class CharacterMovement : MonoBehaviour
         if(value.isPressed && isGrounded == true)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jump);
+            src.PlayOneShot(jumpSound);
         }        
     }
 
